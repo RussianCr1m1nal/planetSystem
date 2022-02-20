@@ -49,6 +49,7 @@ class _NewPlanetViewState extends State<NewPlanetView> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: TextField(
         controller: _radiusController,
+        keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         style: TextStyle(color: _textColor),
         onChanged: (value) {
