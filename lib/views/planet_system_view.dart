@@ -118,6 +118,8 @@ class _PlanetSystemViewState extends State<PlanetSystemView> {
           _setFurthestPlanet(planet);
         }
       }
+
+      _savePlanets();
     });
   }
 
