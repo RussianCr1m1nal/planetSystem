@@ -9,7 +9,7 @@ class OrbitsPainter extends CustomPainter {
 
   final Paint customPaint = Paint()
     ..color = Colors.white
-    ..strokeWidth = 1
+    ..strokeWidth = 1.5
     ..style = PaintingStyle.stroke;
 
   @override

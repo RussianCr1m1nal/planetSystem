@@ -1,4 +1,3 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -21,9 +20,7 @@ class Planet {
   }
 
   String toJson() {
-    return jsonEncode(this, toEncodable: (Object? nonEncodable) {
-      return nonEncodable is Color ? nonEncodable.value : UnsupportedError('Cannot convert to JSON: $nonEncodable');
-    });
+    return jsonEncode({'radius': _radius, 'distanceFromSun': distanceFromSun, 'speed' : _speed, 'color' : _color.value});
   }
 
   double get radius => _radius;

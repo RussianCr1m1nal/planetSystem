@@ -12,12 +12,14 @@ class NewPlanetView extends StatefulWidget {
   @override
   State<NewPlanetView> createState() => _NewPlanetViewState();
 }
-  
+
 class _NewPlanetViewState extends State<NewPlanetView> {
   final _radiusController = TextEditingController();
   final _distanceController = TextEditingController();
   final _speedController = TextEditingController();
   Color _color = Colors.red;
+
+  final _textColor = Colors.blueGrey[200];
 
   @override
   Widget build(BuildContext context) {
@@ -36,37 +38,7 @@ class _NewPlanetViewState extends State<NewPlanetView> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            if (double.tryParse(_radiusController.text) == null ||
-                double.tryParse(_distanceController.text) == null ||
-                double.tryParse(_speedController.text) == null) {
-              _showSnackBar('All the fields need to be field');
-              return;
-            }
-
-            if (_isCollidingWithSun(double.parse(_distanceController.text),
-                double.parse(_radiusController.text))) {
-              _showSnackBar(
-                  'Oops... Looks like your planet is going to collide with the Sun. Try adjusting the radius or distance from the Sun');
-              return;
-            }
-
-            if (_isCollidingWithAnotherPlanet(
-                double.parse(_distanceController.text),
-                double.parse(_radiusController.text))) {
-              _showSnackBar(
-                  'Oops... Looks like your planet is going to collide with another one. Try adjusting the radius or distance from the Sun');
-              return;
-            }
-
-            Navigator.pop(
-                context,
-                Planet(
-                    double.parse(_radiusController.text),
-                    double.parse(_distanceController.text),
-                    double.parse(_speedController.text),
-                    _color));
-          },
+          onPressed: _onSavePlanet,
           backgroundColor: Colors.grey[900],
           child: const Text('Save')),
     );
@@ -77,25 +49,24 @@ class _NewPlanetViewState extends State<NewPlanetView> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
       child: TextField(
         controller: _radiusController,
-        keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        style: TextStyle(color: Colors.blueGrey[200]),
+        style: TextStyle(color: _textColor),
         onChanged: (value) {
           setState(() {
             if ((double.tryParse(value) ?? 0) > sunRadius) {
-              _radiusController.value = TextEditingValue.empty;
+              _radiusController.clear();
               _showSnackBar('Planet\'s radius can\'t be greater then Sun\'s');
             }
           });
         },
         decoration: InputDecoration(
           labelText: 'Radius',
-          labelStyle: TextStyle(color: Colors.blueGrey[200]),
+          labelStyle: TextStyle(color: _textColor),
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: (Colors.blueGrey[200])!, width: 1.0),
+            borderSide: BorderSide(color: (_textColor)!, width: 1.0),
           ),
           enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: (Colors.blueGrey[200])!, width: 1.0),
+            borderSide: BorderSide(color: (_textColor)!, width: 1.0),
           ),
         ),
       ),
@@ -109,15 +80,15 @@ class _NewPlanetViewState extends State<NewPlanetView> {
         controller: _distanceController,
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        style: TextStyle(color: Colors.blueGrey[200]),
+        style: TextStyle(color: _textColor),
         decoration: InputDecoration(
           labelText: 'Distance from the Sun',
-          labelStyle: TextStyle(color: Colors.blueGrey[200]),
+          labelStyle: TextStyle(color: _textColor),
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: (Colors.blueGrey[200])!, width: 1.0),
+            borderSide: BorderSide(color: (_textColor)!, width: 1.0),
           ),
           enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: (Colors.blueGrey[200])!, width: 1.0),
+            borderSide: BorderSide(color: (_textColor)!, width: 1.0),
           ),
         ),
       ),
@@ -131,15 +102,15 @@ class _NewPlanetViewState extends State<NewPlanetView> {
         controller: _speedController,
         keyboardType: TextInputType.number,
         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        style: TextStyle(color: Colors.blueGrey[200]),
+        style: TextStyle(color: _textColor),
         decoration: InputDecoration(
           labelText: 'Speed (sec per orbit)',
-          labelStyle: TextStyle(color: Colors.blueGrey[200]),
+          labelStyle: TextStyle(color: _textColor),
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: (Colors.blueGrey[200])!, width: 1.0),
+            borderSide: BorderSide(color: (_textColor)!, width: 1.0),
           ),
           enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: (Colors.blueGrey[200])!, width: 1.0),
+            borderSide: BorderSide(color: (_textColor)!, width: 1.0),
           ),
         ),
       ),
@@ -188,7 +159,7 @@ class _NewPlanetViewState extends State<NewPlanetView> {
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         child: Text(
           'Prewiew: ',
-          style: TextStyle(color: Colors.blueGrey[200]),
+          style: TextStyle(color: _textColor),
         ),
       ),
       Center(
@@ -206,6 +177,32 @@ class _NewPlanetViewState extends State<NewPlanetView> {
         ),
       ),
     ];
+  }
+
+  void _onSavePlanet() {
+
+    final radius = double.tryParse(_radiusController.text);
+    final distance = double.tryParse(_distanceController.text);
+    final speed = double.tryParse(_speedController.text);
+
+    if (radius == null || distance == null || speed == null) {
+      _showSnackBar('All the fields need to be field');
+      return;
+    }
+
+    if (_isCollidingWithSun(distance, radius)) {
+      _showSnackBar(
+          'Oops... Looks like your planet is going to collide with the Sun. Try adjusting the radius or distance from the Sun');
+      return;
+    }
+
+    if (_isCollidingWithAnotherPlanet(distance, radius)) {
+      _showSnackBar(
+          'Oops... Looks like your planet is going to collide with another one. Try adjusting the radius or distance from the Sun');
+      return;
+    }
+
+    Navigator.pop(context, Planet(radius, distance, speed, _color));
   }
 
   void _showSnackBar(String message) {
