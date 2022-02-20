@@ -181,7 +181,6 @@ class _NewPlanetViewState extends State<NewPlanetView> {
   }
 
   void _onSavePlanet() {
-
     final radius = double.tryParse(_radiusController.text);
     final distance = double.tryParse(_distanceController.text);
     final speed = double.tryParse(_speedController.text);
@@ -217,7 +216,8 @@ class _NewPlanetViewState extends State<NewPlanetView> {
 
   bool _isCollidingWithAnotherPlanet(double distance, double radius) {
     for (Planet planet in widget.planets) {
-      if ((distance - radius >= planet.distanceFromSun - planet.radius &&
+      if (distance == planet.distanceFromSun ||
+          (distance - radius >= planet.distanceFromSun - planet.radius &&
               distance - radius <= planet.distanceFromSun + planet.radius) ||
           (distance + radius >= planet.distanceFromSun - planet.radius &&
               distance + radius <= planet.distanceFromSun + planet.radius)) {
